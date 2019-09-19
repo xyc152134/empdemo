@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xyc.mapper.EmpListMapper">
+    <resultMap id="empList" type="Emp">
+        <id column="emp_id" property="empId"></id>
+        <result column="name" property="name"></result>
+        <result column="age" property="age"></result>
+        <result column="sex" property="sex"></result>
+        <result column="salary" property="salary"></result>
+        <result column="dept_id" property="deptId"></result>
+    </resultMap>
+    <resultMap id="empDeptList" type="Emp">
+        <id column="emp_id" property="empId"></id>
+        <result column="name" property="name"></result>
+        <result column="age" property="age"></result>
+        <result column="sex" property="sex"></result>
+        <result column="salary" property="salary"></result>
+        <result column="did" property="deptId"></result>
+        <association property="dept" javaType="Dept">
+            <id column="did" property="deptId"></id>
+            <result column="dept_name" property="deptName"></result>
+            <result column="location" property="location"></result>
+        </association>
+    </resultMap>
+    <select id="empdept" resultMap="empDeptList">
+       select emp_id,name,age,sex,salary,dept_name from t_emp e left JOIN t_dept d  on  e.dept_id=  d.dept_id
+    </select>
+    <select id="empList" resultMap="empList">
+        select<include refid="all"/>from t_emp;
+    </select>
+    <insert id="inset">
+        insert into t_emp (name,age,sex,salary,dept_id) values (#{name},#{age},#{sex},#{salary},#{deptId});
+    </insert>
+    <delete id="delete">
+        delete from t_emp where emp_id=#{name};
+    </delete>
+    <update id="update">
+        update t_emp set age=#{age},salary=#{salary},dept_id=#{deptId} ,name=#{name}where  emp_id=#{empId} ;
+    </update>
+    <select id="EmpByid" resultMap="empDeptList">
+          select emp_id,name,age,sex,salary,dept_name,e.dept_id did from t_emp e left JOIN t_dept d  on  e.dept_id=  d.dept_id where  emp_id=#{id}
+    </select>
+    <select id="findbyname" resultMap="empList">
+        select
+        <include refid="all"/>
+        from t_emp where name=#{name}
+    </select>
+    <sql id="all">
+        emp_id,name,age,sex,salary,dept_id
+    </sql>
+</mapper>
